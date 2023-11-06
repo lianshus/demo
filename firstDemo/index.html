@@ -1,0 +1,115 @@
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+
+  <link rel="stylesheet" type="text/css" href="index.css">
+
+  <script src="./node_modules/web3/dist/web3.min.js"></script>
+
+</head>
+
+<body>
+  <div class="container">
+
+    <h1>Info Contract</h1>
+
+    <h2 id="info"></h2>
+
+    <label for="name" class="col-lg-2 control-label">Name</label>
+    <input id="name" type="text">
+
+    <label for="name" class="col-lg-2 control-label">Age</label>
+    <input id="age" type="text">
+
+    <button id="button">Update Info</button>
+
+
+  </div>
+
+  <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
+
+  <script>
+//这里开始是用web3来调用合约的内容
+    if (typeof web3 !== 'undefined') {
+      web3 = new Web3(web3.currentProvider);
+    } else {
+      // set the provider you want from Web3.providers
+      web3 = new Web3(new Web3.providers.HttpProvider("http://localhost:8545"));//这里填写你的ganache-cli/ganache监听地址
+    }
+
+    var contractABI = [
+	{
+		"constant": false,
+		"inputs": [
+			{
+				"internalType": "string",
+				"name": "_fName",
+				"type": "string"
+			},
+			{
+				"internalType": "uint256",
+				"name": "_age",
+				"type": "uint256"
+			}
+		],
+		"name": "setInfo",
+		"outputs": [],
+		"payable": false,
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"constant": true,
+		"inputs": [],
+		"name": "getInfo",
+		"outputs": [
+			{
+				"internalType": "string",
+				"name": "",
+				"type": "string"
+			},
+			{
+				"internalType": "uint256",
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"payable": false,
+		"stateMutability": "view",
+		"type": "function"
+	}
+];//你的合约ABI地址
+    var contractAddress = "0x9B9a3116AF15853887C997B03Df42958C686a9f8";//你的合约地址
+    
+	//创建合约实例
+    var contract = new web3.eth.Contract(contractABI, contractAddress);
+
+    $("#button").click(function () {
+    //调用合约的写方法setInfo
+      contract.methods.setInfo($("#name").val(), $("#age").val())
+        .send({ from: '0x24553b43437537bE8169Cf49c55efec58fdcf73c' })
+        .then(console.log);
+        
+    //调用合约的读方法getInfo 
+      contract.methods.getInfo().call((err, result) => {
+        if (!err) {
+          $("#info").html(result[0] + ' (' + result[1] + ' years old)');
+          console.log(result);
+        }
+        else {
+          console.log(err);
+        }
+      }).catch((e) => {});
+    });
+
+  </script>
+
+</body>
+
+</html>

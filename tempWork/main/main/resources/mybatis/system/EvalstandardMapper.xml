@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.student.system.dao.EvalstandardDao">
+
+	<select id="get" resultType="com.student.system.domain.EvalstandardDO">
+		select `id`,`traceno`,`name`,`knowledgerlevel`,`explanation`,`homeworklevel`,`homeworkgrad`,`courequa`,`teachqua`,`coursesatisfact`,`note`,`isdel`,`createtime`,`createuser`,`createname`,`updatetime`,`updateuser`,`updatename` from evalstandard where id = #{value}
+	</select>
+	<select id="getByTraceno" resultType="com.student.system.domain.EvalstandardDO">
+		select `id`,`traceno`,`name`,`knowledgerlevel`,`explanation`,`homeworklevel`,`homeworkgrad`,`courequa`,`teachqua`,`coursesatisfact`,`note`,`isdel`,`createtime`,`createuser`,`createname`,`updatetime`,`updateuser`,`updatename` from evalstandard where traceno = #{value}
+	</select>
+
+	<select id="list" resultType="com.student.system.domain.EvalstandardDO">
+		select `id`,`traceno`,`name`,`knowledgerlevel`,`explanation`,`homeworklevel`,`homeworkgrad`,`courequa`,`teachqua`,`coursesatisfact`,`note`,`isdel`,`createtime`,`createuser`,`createname`,`updatetime`,`updateuser`,`updatename` from evalstandard
+        <where>
+			<if test="searchName != null and searchName != ''">
+				and (traceno LIKE CONCAT('%',#{searchName},'%') or name LIKE CONCAT('%',#{searchName},'%'))</if>
+		  		  <if test="id != null and id != ''"> and id = #{id} </if>
+		  		  <if test="traceno != null and traceno != ''"> and traceno = #{traceno} </if>
+		  		  <if test="name != null and name != ''"> and name = #{name} </if>
+		  		  <if test="knowledgerlevel != null and knowledgerlevel != ''"> and knowledgerlevel = #{knowledgerlevel} </if>
+		  		  <if test="explanation != null and explanation != ''"> and explanation = #{explanation} </if>
+		  		  <if test="homeworklevel != null and homeworklevel != ''"> and homeworklevel = #{homeworklevel} </if>
+		  		  <if test="homeworkgrad != null and homeworkgrad != ''"> and homeworkgrad = #{homeworkgrad} </if>
+		  		  <if test="courequa != null and courequa != ''"> and courequa = #{courequa} </if>
+		  		  <if test="teachqua != null and teachqua != ''"> and teachqua = #{teachqua} </if>
+		  		  <if test="coursesatisfact != null and coursesatisfact != ''"> and coursesatisfact = #{coursesatisfact} </if>
+		  		  <if test="note != null and note != ''"> and note = #{note} </if>
+		  		  <if test="isdel != null and isdel != ''"> and isdel = #{isdel} </if>
+		  		  <if test="createtime != null and createtime != ''"> and createtime = #{createtime} </if>
+		  		  <if test="createuser != null and createuser != ''"> and createuser = #{createuser} </if>
+		  		  <if test="createname != null and createname != ''"> and createname = #{createname} </if>
+		  		  <if test="updatetime != null and updatetime != ''"> and updatetime = #{updatetime} </if>
+		  		  <if test="updateuser != null and updateuser != ''"> and updateuser = #{updateuser} </if>
+		  		  <if test="updatename != null and updatename != ''"> and updatename = #{updatename} </if>
+		  		</where>
+        <choose>
+            <when test="sort != null and sort.trim() != ''">
+                order by ${sort} ${order}
+            </when>
+			<otherwise>
+                order by createtime desc
+			</otherwise>
+        </choose>
+		<if test="offset != null and limit != null">
+			limit #{offset}, #{limit}
+		</if>
+	</select>
+	
+ 	<select id="count" resultType="int">
+		select count(*) from evalstandard
+		 <where>
+			 <if test="searchName != null and searchName != ''">
+				 and (traceno LIKE CONCAT('%',#{searchName},'%') or name LIKE CONCAT('%',#{searchName},'%'))</if>
+		  		  <if test="id != null and id != ''"> and id = #{id} </if>
+		  		  <if test="traceno != null and traceno != ''"> and traceno = #{traceno} </if>
+		  		  <if test="name != null and name != ''"> and name = #{name} </if>
+		  		  <if test="knowledgerlevel != null and knowledgerlevel != ''"> and knowledgerlevel = #{knowledgerlevel} </if>
+		  		  <if test="explanation != null and explanation != ''"> and explanation = #{explanation} </if>
+		  		  <if test="homeworklevel != null and homeworklevel != ''"> and homeworklevel = #{homeworklevel} </if>
+		  		  <if test="homeworkgrad != null and homeworkgrad != ''"> and homeworkgrad = #{homeworkgrad} </if>
+		  		  <if test="courequa != null and courequa != ''"> and courequa = #{courequa} </if>
+		  		  <if test="teachqua != null and teachqua != ''"> and teachqua = #{teachqua} </if>
+		  		  <if test="coursesatisfact != null and coursesatisfact != ''"> and coursesatisfact = #{coursesatisfact} </if>
+		  		  <if test="note != null and note != ''"> and note = #{note} </if>
+		  		  <if test="isdel != null and isdel != ''"> and isdel = #{isdel} </if>
+		  		  <if test="createtime != null and createtime != ''"> and createtime = #{createtime} </if>
+		  		  <if test="createuser != null and createuser != ''"> and createuser = #{createuser} </if>
+		  		  <if test="createname != null and createname != ''"> and createname = #{createname} </if>
+		  		  <if test="updatetime != null and updatetime != ''"> and updatetime = #{updatetime} </if>
+		  		  <if test="updateuser != null and updateuser != ''"> and updateuser = #{updateuser} </if>
+		  		  <if test="updatename != null and updatename != ''"> and updatename = #{updatename} </if>
+		  		</where>
+	</select>
+	 
+	<insert id="save" parameterType="com.student.system.domain.EvalstandardDO" useGeneratedKeys="true" keyProperty="id">
+		insert into evalstandard
+		(
+			`traceno`, 
+			`name`, 
+			`knowledgerlevel`, 
+			`explanation`, 
+			`homeworklevel`, 
+			`homeworkgrad`, 
+			`courequa`, 
+			`teachqua`, 
+			`coursesatisfact`, 
+			`note`, 
+			`isdel`, 
+			`createtime`, 
+			`createuser`, 
+			`createname`, 
+			`updatetime`, 
+			`updateuser`, 
+			`updatename`
+		)
+		values
+		(
+			#{traceno}, 
+			#{name}, 
+			#{knowledgerlevel}, 
+			#{explanation}, 
+			#{homeworklevel}, 
+			#{homeworkgrad}, 
+			#{courequa}, 
+			#{teachqua}, 
+			#{coursesatisfact}, 
+			#{note}, 
+			#{isdel}, 
+			#{createtime}, 
+			#{createuser}, 
+			#{createname}, 
+			#{updatetime}, 
+			#{updateuser}, 
+			#{updatename}
+		)
+	</insert>
+	 
+	<update id="update" parameterType="com.student.system.domain.EvalstandardDO">
+		update evalstandard 
+		<set>
+			<if test="traceno != null">`traceno` = #{traceno}, </if>
+			<if test="name != null">`name` = #{name}, </if>
+			<if test="knowledgerlevel != null">`knowledgerlevel` = #{knowledgerlevel}, </if>
+			<if test="explanation != null">`explanation` = #{explanation}, </if>
+			<if test="homeworklevel != null">`homeworklevel` = #{homeworklevel}, </if>
+			<if test="homeworkgrad != null">`homeworkgrad` = #{homeworkgrad}, </if>
+			<if test="courequa != null">`courequa` = #{courequa}, </if>
+			<if test="teachqua != null">`teachqua` = #{teachqua}, </if>
+			<if test="coursesatisfact != null">`coursesatisfact` = #{coursesatisfact}, </if>
+			<if test="note != null">`note` = #{note}, </if>
+			<if test="isdel != null">`isdel` = #{isdel}, </if>
+			<if test="createtime != null">`createtime` = #{createtime}, </if>
+			<if test="createuser != null">`createuser` = #{createuser}, </if>
+			<if test="createname != null">`createname` = #{createname}, </if>
+			<if test="updatetime != null">`updatetime` = #{updatetime}, </if>
+			<if test="updateuser != null">`updateuser` = #{updateuser}, </if>
+			<if test="updatename != null">`updatename` = #{updatename}</if>
+		</set>
+		where id = #{id}
+	</update>
+	
+	<delete id="remove">
+		delete from evalstandard where id = #{value}
+	</delete>
+
+	<delete id="removeByTraceno">
+		delete from evalstandard where traceno = #{value}
+	</delete>
+	
+	<delete id="batchRemove">
+		delete from evalstandard where id in 
+		<foreach item="id" collection="array" open="(" separator="," close=")">
+			#{id}
+		</foreach>
+	</delete>
+
+</mapper>

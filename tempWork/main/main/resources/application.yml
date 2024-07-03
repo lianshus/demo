@@ -1,0 +1,28 @@
+server:
+  session-timeout: 1800
+  port: 8080
+spring:
+  thymeleaf:
+    mode: LEGACYHTML5
+    cache: false
+  jackson:
+    time-zone: GMT+8
+    date-format: yyyy-MM-dd HH:mm:ss
+  profiles: 
+    active: dev
+  servlet:
+    multipart:
+      max-file-size: 30MB
+      max-request-size: 30MB
+  devtools:
+    restart:
+      enabled: true
+  cache:
+    type: ehcache
+    ehcache:
+      config: classpath:config/ehcache.xml
+mybatis:
+  configuration:
+    map-underscore-to-camel-case: true
+  mapper-locations: mybatis/**/*Mapper.xml
+  typeAliasesPackage: com.student.**.domain

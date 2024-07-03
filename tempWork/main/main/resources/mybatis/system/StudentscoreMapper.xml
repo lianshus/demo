@@ -1,0 +1,218 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.student.system.dao.StudentscoreDao">
+
+	<select id="get" resultType="com.student.system.domain.StudentscoreDO">
+		select `id`,`traceno`,`stuhash`,`coursetraceno`,`coursename`,`teacherno`,`teacher`,`standid`,`standtraceno`,`standtname`,`pointknowledgerlevel`,`pointexplanation`,`pointhomeworklevel`,`pointhomeworkgrad`,`pointcourequa`,`pointteachqua`,`pointcoursesatisfact`,`pointcourse`,`status`,`isdel`,`createtime`,`createuser`,`createname`,`updatetime`,`updateuser`,`updatename` from studentscore where id = #{value}
+	</select>
+	<select id="getByTraceno" resultType="com.student.system.domain.StudentscoreDO">
+		select `id`,`traceno`,`stuhash`,`coursetraceno`,`coursename`,`teacherno`,`teacher`,`standid`,`standtraceno`,`standtname`,`pointknowledgerlevel`,`pointexplanation`,`pointhomeworklevel`,`pointhomeworkgrad`,`pointcourequa`,`pointteachqua`,`pointcoursesatisfact`,`pointcourse`,`status`,`isdel`,`createtime`,`createuser`,`createname`,`updatetime`,`updateuser`,`updatename` from studentscore where traceno = #{value}
+	</select>
+
+	<select id="list" resultType="com.student.system.domain.StudentscoreDO">
+		select `id`,`traceno`,`stuhash`,`coursetraceno`,`coursename`,`teacherno`,`teacher`,`standid`,`standtraceno`,`standtname`,`pointknowledgerlevel`,`pointexplanation`,`pointhomeworklevel`,`pointhomeworkgrad`,`pointcourequa`,`pointteachqua`,`pointcoursesatisfact`,`pointcourse`,`status`,`isdel`,`createtime`,`createuser`,`createname`,`updatetime`,`updateuser`,`updatename` from studentscore
+        <where>
+			<if test="searchName != null and searchName != ''">
+				and (traceno LIKE CONCAT('%',#{searchName},'%') or coursename LIKE CONCAT('%',#{searchName},'%'))</if>
+		  		  <if test="id != null and id != ''"> and id = #{id} </if>
+		  		  <if test="traceno != null and traceno != ''"> and traceno = #{traceno} </if>
+		  		  <if test="stuhash != null and stuhash != ''"> and stuhash = #{stuhash} </if>
+		  		  <if test="coursetraceno != null and coursetraceno != ''"> and coursetraceno = #{coursetraceno} </if>
+		  		  <if test="coursename != null and coursename != ''"> and coursename = #{coursename} </if>
+		  		  <if test="teacherno != null and teacherno != ''"> and teacherno = #{teacherno} </if>
+		  		  <if test="teacher != null and teacher != ''"> and teacher = #{teacher} </if>
+		  		  <if test="standid != null and standid != ''"> and standid = #{standid} </if>
+		  		  <if test="standtraceno != null and standtraceno != ''"> and standtraceno = #{standtraceno} </if>
+		  		  <if test="standtname != null and standtname != ''"> and standtname = #{standtname} </if>
+		  		  <if test="pointknowledgerlevel != null and pointknowledgerlevel != ''"> and pointknowledgerlevel = #{pointknowledgerlevel} </if>
+		  		  <if test="pointexplanation != null and pointexplanation != ''"> and pointexplanation = #{pointexplanation} </if>
+		  		  <if test="pointhomeworklevel != null and pointhomeworklevel != ''"> and pointhomeworklevel = #{pointhomeworklevel} </if>
+		  		  <if test="pointhomeworkgrad != null and pointhomeworkgrad != ''"> and pointhomeworkgrad = #{pointhomeworkgrad} </if>
+		  		  <if test="pointcourequa != null and pointcourequa != ''"> and pointcourequa = #{pointcourequa} </if>
+		  		  <if test="pointteachqua != null and pointteachqua != ''"> and pointteachqua = #{pointteachqua} </if>
+		  		  <if test="pointcoursesatisfact != null and pointcoursesatisfact != ''"> and pointcoursesatisfact = #{pointcoursesatisfact} </if>
+		  		  <if test="pointcourse != null and pointcourse != ''"> and pointcourse = #{pointcourse} </if>
+		  		  <if test="status != null and status != ''"> and status = #{status} </if>
+		  		  <if test="isdel != null and isdel != ''"> and isdel = #{isdel} </if>
+		  		  <if test="createtime != null and createtime != ''"> and createtime = #{createtime} </if>
+		  		  <if test="createuser != null and createuser != ''"> and createuser = #{createuser} </if>
+		  		  <if test="createname != null and createname != ''"> and createname = #{createname} </if>
+		  		  <if test="updatetime != null and updatetime != ''"> and updatetime = #{updatetime} </if>
+		  		  <if test="updateuser != null and updateuser != ''"> and updateuser = #{updateuser} </if>
+		  		  <if test="updatename != null and updatename != ''"> and updatename = #{updatename} </if>
+		  		</where>
+        <choose>
+            <when test="sort != null and sort.trim() != ''">
+                order by ${sort} ${order}
+            </when>
+			<otherwise>
+                order by createtime desc
+			</otherwise>
+        </choose>
+		<if test="offset != null and limit != null">
+			limit #{offset}, #{limit}
+		</if>
+	</select>
+	
+ 	<select id="count" resultType="int">
+		select count(*) from studentscore
+		 <where>
+			 <if test="searchName != null and searchName != ''">
+				 and (traceno LIKE CONCAT('%',#{searchName},'%') or coursename LIKE CONCAT('%',#{searchName},'%'))</if>
+		  		  <if test="id != null and id != ''"> and id = #{id} </if>
+		  		  <if test="traceno != null and traceno != ''"> and traceno = #{traceno} </if>
+		  		  <if test="stuhash != null and stuhash != ''"> and stuhash = #{stuhash} </if>
+		  		  <if test="coursetraceno != null and coursetraceno != ''"> and coursetraceno = #{coursetraceno} </if>
+		  		  <if test="coursename != null and coursename != ''"> and coursename = #{coursename} </if>
+		  		  <if test="teacherno != null and teacherno != ''"> and teacherno = #{teacherno} </if>
+		  		  <if test="teacher != null and teacher != ''"> and teacher = #{teacher} </if>
+		  		  <if test="standid != null and standid != ''"> and standid = #{standid} </if>
+		  		  <if test="standtraceno != null and standtraceno != ''"> and standtraceno = #{standtraceno} </if>
+		  		  <if test="standtname != null and standtname != ''"> and standtname = #{standtname} </if>
+		  		  <if test="pointknowledgerlevel != null and pointknowledgerlevel != ''"> and pointknowledgerlevel = #{pointknowledgerlevel} </if>
+		  		  <if test="pointexplanation != null and pointexplanation != ''"> and pointexplanation = #{pointexplanation} </if>
+		  		  <if test="pointhomeworklevel != null and pointhomeworklevel != ''"> and pointhomeworklevel = #{pointhomeworklevel} </if>
+		  		  <if test="pointhomeworkgrad != null and pointhomeworkgrad != ''"> and pointhomeworkgrad = #{pointhomeworkgrad} </if>
+		  		  <if test="pointcourequa != null and pointcourequa != ''"> and pointcourequa = #{pointcourequa} </if>
+		  		  <if test="pointteachqua != null and pointteachqua != ''"> and pointteachqua = #{pointteachqua} </if>
+		  		  <if test="pointcoursesatisfact != null and pointcoursesatisfact != ''"> and pointcoursesatisfact = #{pointcoursesatisfact} </if>
+		  		  <if test="pointcourse != null and pointcourse != ''"> and pointcourse = #{pointcourse} </if>
+		  		  <if test="status != null and status != ''"> and status = #{status} </if>
+		  		  <if test="isdel != null and isdel != ''"> and isdel = #{isdel} </if>
+		  		  <if test="createtime != null and createtime != ''"> and createtime = #{createtime} </if>
+		  		  <if test="createuser != null and createuser != ''"> and createuser = #{createuser} </if>
+		  		  <if test="createname != null and createname != ''"> and createname = #{createname} </if>
+		  		  <if test="updatetime != null and updatetime != ''"> and updatetime = #{updatetime} </if>
+		  		  <if test="updateuser != null and updateuser != ''"> and updateuser = #{updateuser} </if>
+		  		  <if test="updatename != null and updatename != ''"> and updatename = #{updatename} </if>
+		  		</where>
+	</select>
+	 
+	<insert id="save" parameterType="com.student.system.domain.StudentscoreDO" useGeneratedKeys="true" keyProperty="id">
+		insert into studentscore
+		(
+			`traceno`, 
+			`stuhash`, 
+			`coursetraceno`, 
+			`coursename`, 
+			`teacherno`, 
+			`teacher`, 
+			`standid`, 
+			`standtraceno`, 
+			`standtname`, 
+			`pointknowledgerlevel`, 
+			`pointexplanation`, 
+			`pointhomeworklevel`, 
+			`pointhomeworkgrad`, 
+			`pointcourequa`, 
+			`pointteachqua`, 
+			`pointcoursesatisfact`, 
+			`pointcourse`, 
+			`status`, 
+			`isdel`, 
+			`createtime`, 
+			`createuser`, 
+			`createname`, 
+			`updatetime`, 
+			`updateuser`, 
+			`updatename`
+		)
+		values
+		(
+			#{traceno}, 
+			#{stuhash}, 
+			#{coursetraceno}, 
+			#{coursename}, 
+			#{teacherno}, 
+			#{teacher}, 
+			#{standid}, 
+			#{standtraceno}, 
+			#{standtname}, 
+			#{pointknowledgerlevel}, 
+			#{pointexplanation}, 
+			#{pointhomeworklevel}, 
+			#{pointhomeworkgrad}, 
+			#{pointcourequa}, 
+			#{pointteachqua}, 
+			#{pointcoursesatisfact}, 
+			#{pointcourse}, 
+			#{status}, 
+			#{isdel}, 
+			#{createtime}, 
+			#{createuser}, 
+			#{createname}, 
+			#{updatetime}, 
+			#{updateuser}, 
+			#{updatename}
+		)
+	</insert>
+	 
+	<update id="update" parameterType="com.student.system.domain.StudentscoreDO">
+		update studentscore 
+		<set>
+			<if test="traceno != null">`traceno` = #{traceno}, </if>
+			<if test="stuhash != null">`stuhash` = #{stuhash}, </if>
+			<if test="coursetraceno != null">`coursetraceno` = #{coursetraceno}, </if>
+			<if test="coursename != null">`coursename` = #{coursename}, </if>
+			<if test="teacherno != null">`teacherno` = #{teacherno}, </if>
+			<if test="teacher != null">`teacher` = #{teacher}, </if>
+			<if test="standid != null">`standid` = #{standid}, </if>
+			<if test="standtraceno != null">`standtraceno` = #{standtraceno}, </if>
+			<if test="standtname != null">`standtname` = #{standtname}, </if>
+			<if test="pointknowledgerlevel != null">`pointknowledgerlevel` = #{pointknowledgerlevel}, </if>
+			<if test="pointexplanation != null">`pointexplanation` = #{pointexplanation}, </if>
+			<if test="pointhomeworklevel != null">`pointhomeworklevel` = #{pointhomeworklevel}, </if>
+			<if test="pointhomeworkgrad != null">`pointhomeworkgrad` = #{pointhomeworkgrad}, </if>
+			<if test="pointcourequa != null">`pointcourequa` = #{pointcourequa}, </if>
+			<if test="pointteachqua != null">`pointteachqua` = #{pointteachqua}, </if>
+			<if test="pointcoursesatisfact != null">`pointcoursesatisfact` = #{pointcoursesatisfact}, </if>
+			<if test="pointcourse != null">`pointcourse` = #{pointcourse}, </if>
+			<if test="status != null">`status` = #{status}, </if>
+			<if test="isdel != null">`isdel` = #{isdel}, </if>
+			<if test="createtime != null">`createtime` = #{createtime}, </if>
+			<if test="createuser != null">`createuser` = #{createuser}, </if>
+			<if test="createname != null">`createname` = #{createname}, </if>
+			<if test="updatetime != null">`updatetime` = #{updatetime}, </if>
+			<if test="updateuser != null">`updateuser` = #{updateuser}, </if>
+			<if test="updatename != null">`updatename` = #{updatename}</if>
+		</set>
+		where id = #{id}
+	</update>
+	<update id="updateCourse" parameterType="com.student.system.domain.StudentscoreDO">
+		update studentscore set `coursename` = #{coursename}
+		where coursetraceno = #{coursetraceno}
+	</update>
+	<update id="updateCoursePoint" parameterType="com.student.system.domain.StudentscoreDO">
+		UPDATE
+		course c
+		JOIN(
+		SELECT IFNULL(AVG(pointknowledgerlevel),0) AS pointknowledgerlevel,IFNULL(AVG(pointexplanation),0) AS pointexplanation,IFNULL(AVG(pointhomeworklevel),0) pointhomeworklevel
+		,IFNULL(AVG(pointhomeworkgrad),0) pointhomeworkgrad,IFNULL(AVG(pointcourequa),0) pointcourequa,IFNULL(AVG(pointteachqua),0) pointteachqua,IFNULL(AVG(pointcoursesatisfact),0) pointcoursesatisfact ,
+		IFNULL(AVG(pointcourse),0) pointcourse,coursetraceno
+		FROM `studentscore`
+		GROUP BY coursetraceno
+		)AS t
+		ON t.coursetraceno = c.`traceno`
+		SET c.`avgknowledgerlevel` = t.pointknowledgerlevel,c.`avgexplanation`=t.pointexplanation,c.`avghomeworklevel`=t.pointhomeworklevel,
+		c.`avghomeworkgrad`=t.pointhomeworkgrad,c.`avgcourequa`=t.pointcourequa,c.`avgteachqua`=t.pointteachqua,c.`avgcoursesatisfact`=t.pointcoursesatisfact
+		,c.`avgcourse`=t.pointcourse
+		WHERE c.`traceno` = #{value}
+	</update>
+
+	<delete id="remove">
+		delete from studentscore where id = #{value}
+	</delete>
+
+	<delete id="removeByTraceno">
+		delete from studentscore where traceno = #{value}
+	</delete>
+	
+	<delete id="batchRemove">
+		delete from studentscore where id in 
+		<foreach item="id" collection="array" open="(" separator="," close=")">
+			#{id}
+		</foreach>
+	</delete>
+
+</mapper>

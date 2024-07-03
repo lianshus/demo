@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html>
+<meta charset="utf-8">
+
+<head th:include="system/user/include :: header"></head>
+<style type="text/css">
+    table.hovertable {
+        font-family: verdana,arial,sans-serif;
+        font-size:11px;
+        color:#333333;
+        border-width: 1px;
+        border-color: #999999;
+        border-collapse: collapse;
+        float: left;
+        width: 300px;
+        margin:5px 5px;
+    }
+    table.hovertable th {
+        background-color:#c3dde0;
+        border-width: 1px;
+        padding: 8px;
+        border-style: solid;
+        border-color: #a9c6c9;
+        text-align: center;
+    }
+    table.hovertable tr {
+        background-color:#d4e3e5;
+    }
+    table.hovertable td {
+        border-width: 1px;
+        padding: 8px;
+        border-style: solid;
+        border-color: #a9c6c9;
+        width: 10%;
+    }
+    #divid {
+        position:fixed;
+        z-index:2000;
+        left:50%;
+        top:50%;
+        transform:translate(-50%,-50%);
+    }
+    #imgid {
+        width:1000px;
+        /*height:500px;*/
+    }
+</style>
+<body class="gray-bg">
+<div class="wrapper wrapper-content animated fadeInRight">
+    <div class="row">
+        <div class="col-lg-12 col-md-12 col-sm-12">
+            <div class="ibox">
+                <div class="ibox-title" style="padding-bottom: 0;">
+                    <h3 class="text-center">信息溯源</h3>
+                    <div class="gg-nav">
+                        <ul class="nav nav-tabs">
+                            <li class="active"><a href="#pwd_info" data-toggle="tab">信息溯源</a></li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="tab-content">
+                    <div class="ibox-content tab-pane fade in active" id="pwd_info">
+                        <form class="gg-form" role="form" id="openshow" οnsubmit="return false;">
+                            <div class="gg-formGroup">
+                                <div class="gg-formTitle">
+                                    <em class="gg-star">*</em>
+                                    <span>溯源编号:</span>
+                                </div>
+                                <div class="gg-formDetail gg-dashed">
+                                    <input type="text" class="form-control gg-border0" style="float: left;width: 70%;" id="traceno" name="traceno" placeholder="请输入溯源编号" />
+                                    <button type="button" class="btn btn-sm btn-primary" id="open_show">查询</button>
+                                </div>
+                            </div>
+                        </form>
+                        <div id="show" class="ibox-content" style="height: 1000px;display: none;">
+                            查询结果：<hr>
+                            <div id="htmlStr" style="background-color: whitesmoke;"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div th:include="system/user/include :: footer"></div>
+<script type="text/javascript">
+    $().ready(function() {
+        validateRule();
+        document.onkeydown = function (event) {
+            if (event.keyCode == 13) //回车键的键值为13
+            {
+                $("#open_show").click();
+                return false;
+            }
+        };
+    });
+    function myFunction(){
+        var src=$("#image_up").attr("src")
+        $("#imgid").attr("src",src)
+        $("#divid").css("display","block")
+    }
+    function myFunc(){
+        $("#divid").css("display","none")
+    }
+    $("#open_show").click(function () {
+        $('#show').css('display','none');
+        if($("#openshow").valid()){
+            $.ajax({
+                cache : true,
+                type : "POST",
+                url : "/openshowcx",
+                data : {
+                    'traceno' : $('#traceno').val()
+                },
+                async : false,
+                error : function(request) {
+                    parent.layer.alert("Connection error");
+                },
+                success : function(result) {
+                    if (result.code == 200 && result.data!="") {
+                        var htmlStr="<div style=\"display:none;\" id=\"divid\" >\n" +
+                            "<img onclick=\"myFunc()\" src=\"\" id=\"imgid\" />\n" +
+                            "</div>";
+                        $('#show').css('display','block');
+                        //var htmlStr="";
+                        if(result.data != null && result.data.traceno!="" && result.data.traceno!=null){
+                            var farmHtml = "";
+                            $('#show').css('display','block');
+                            if(result.data.farmDO != null && result.data.farmDO.traceno!="" && result.data.farmDO.traceno!=null) {
+                                farmHtml += "<table class=\"hovertable\" id=\"scxx\">" +
+                                    "<tbody><tr>" +
+                                    "    <th colspan=\"2\">种植信息";
+                                if (result.data.farmDO.isdel == "1") {
+                                    farmHtml += "<label id=\"isdel\" style=\"color: red;\">(已删除)</label>";
+                                }
+                                farmHtml += "</th></tr>" +
+                                    "<tr onmouseover=\"this.style.backgroundColor='#ffff66';\" onmouseout=\"this.style.backgroundColor='#d4e3e5';\" style=\"background-color: rgb(212, 227, 229);\">" +
+                                    "    <td><label>溯源码：</label></td><td>" + result.data.traceno + "</td>" +
+                                    "</tr>" +
+                                    "<tr onmouseover=\"this.style.backgroundColor='#ffff66';\" onmouseout=\"this.style.backgroundColor='#d4e3e5';\" style=\"background-color: rgb(212, 227, 229);\">" +
+                                    "    <td><label>农作物名称：</label></td><td>" + result.data.farmDO.farmname + "</td>" +
+                                    "</tr>" +
+                                    "<tr onmouseover=\"this.style.backgroundColor='#ffff66';\" onmouseout=\"this.style.backgroundColor='#d4e3e5';\" style=\"background-color: rgb(212, 227, 229);\">" +
+                                    "    <td><label>种植地：</label></td><td>" + result.data.farmDO.gardens + "</td>" +
+                                    "</tr>" +
+                                    "<tr onmouseover=\"this.style.backgroundColor='#ffff66';\" onmouseout=\"this.style.backgroundColor='#d4e3e5';\" style=\"background-color: rgb(212, 227, 229);\">" +
+                                    "    <td><label>种植人：</label></td><td>" + result.data.farmDO.grownpeople + "</td>" +
+                                    "</tr>" +
+                                    "<tr onmouseover=\"this.style.backgroundColor='#ffff66';\" onmouseout=\"this.style.backgroundColor='#d4e3e5';\" style=\"background-color: rgb(212, 227, 229);\">" +
+                                    "    <td><label>生长过程：</label></td><td>" + result.data.farmDO.growprocess + "</td>" +
+                                    "</tr>" +
+                                    "<tr onmouseover=\"this.style.backgroundColor='#ffff66';\" onmouseout=\"this.style.backgroundColor='#d4e3e5';\" style=\"background-color: rgb(212, 227, 229);\">" +
+                                    "    <td><label>生长环境：</label></td><td>" + result.data.farmDO.growenv + "</td>" +
+                                    "</tr>" +
+                                    "<tr onmouseover=\"this.style.backgroundColor='#ffff66';\" onmouseout=\"this.style.backgroundColor='#d4e3e5';\" style=\"background-color: rgb(212, 227, 229);\">" +
+                                    "    <td><label>负责人：</label></td><td>" + result.data.farmDO.head + "</td>" +
+                                    "</tr>" +
+                                    "<tr onmouseover=\"this.style.backgroundColor='#ffff66';\" onmouseout=\"this.style.backgroundColor='#d4e3e5';\" style=\"background-color: rgb(212, 227, 229);\">" +
+                                    "    <td><label>作业时间：</label></td><td>" + result.data.farmDO.worktime + "</td>" +
+                                    "</tr>" +
+                                    "<tr onmouseover=\"this.style.backgroundColor='#ffff66';\" onmouseout=\"this.style.backgroundColor='#d4e3e5';\" style=\"background-color: rgb(212, 227, 229);\">" +
+                                    "    <td><label>备注信息：</label></td><td>" + result.data.farmDO.note + "</td>" +
+                                    "</tr>" +
+                                    "<tr onmouseover=\"this.style.backgroundColor='#ffff66';\" onmouseout=\"this.style.backgroundColor='#d4e3e5';\" style=\"background-color: rgb(212, 227, 229);\">" +
+                                    "    <td><label>登记时间：</label></td><td>" + result.data.farmDO.createtime + "</td>" +
+                                    "</tr>" +
+                                    "<tr onmouseover=\"this.style.backgroundColor='#ffff66';\" onmouseout=\"this.style.backgroundColor='#d4e3e5';\" style=\"background-color: rgb(212, 227, 229);\">" +
+                                    "    <td><label>操作人：</label></td><td>" + result.data.farmDO.createname + "</td>" +
+                                    "</tr>" +
+                                    "<tr onmouseover=\"this.style.backgroundColor='#ffff66';\" onmouseout=\"this.style.backgroundColor='#d4e3e5';\" style=\"background-color: rgb(212, 227, 229);\">" +
+                                    "    <td><label>修改时间：</label></td><td>" + result.data.farmDO.updatetime + "</td>" +
+                                    "</tr>" +
+                                    "<tr onmouseover=\"this.style.backgroundColor='#ffff66';\" onmouseout=\"this.style.backgroundColor='#d4e3e5';\" style=\"background-color: rgb(212, 227, 229);\">" +
+                                    "    <td><label>修改人：</label></td><td>" + result.data.farmDO.updatename + "</td>" +
+                                    "</tr></tbody></table>";
+                            }
+                            if(result.data.productDO != null && result.data.productDO.traceno!="" && result.data.productDO.traceno!=null && result.data.productDO.createtime!="" && result.data.productDO.createtime!=null) {
+                                farmHtml += "<table class=\"hovertable\" id=\"scxx\">" +
+                                    "<tbody><tr>" +
+                                    "    <th colspan=\"2\">生产信息";
+                                if (result.data.productDO.isdel == "1") {
+                                    farmHtml += "<label id=\"isdel\" style=\"color: red;\">(已删除)</label>";
+                                }
+                                farmHtml += "</th></tr>" +
+                                    "<tr onmouseover=\"this.style.backgroundColor='#ffff66';\" onmouseout=\"this.style.backgroundColor='#d4e3e5';\" style=\"background-color: rgb(212, 227, 229);\">" +
+                                    "    <td><label>溯源码：</label></td><td>" + result.data.productDO.traceno + "</td>" +
+                                    "</tr>" +
+                                    "<tr onmouseover=\"this.style.backgroundColor='#ffff66';\" onmouseout=\"this.style.backgroundColor='#d4e3e5';\" style=\"background-color: rgb(212, 227, 229);\">" +
+                                    "    <td><label>商品名字：</label></td><td>" + result.data.productDO.name + "</td>" +
+                                    "</tr>" +
+                                    "<tr onmouseover=\"this.style.backgroundColor='#ffff66';\" onmouseout=\"this.style.backgroundColor='#d4e3e5';\" style=\"background-color: rgb(212, 227, 229);\">" +
+                                    "    <td><label>商品分类：</label></td><td>" + result.data.productDO.classname + "</td>" +
+                                    "</tr>" +
+                                    "<tr onmouseover=\"this.style.backgroundColor='#ffff66';\" onmouseout=\"this.style.backgroundColor='#d4e3e5';\" style=\"background-color: rgb(212, 227, 229);\">" +
+                                    "    <td><label>生产商名称：</label></td><td>" + result.data.productDO.producers + "</td>" +
+                                    "</tr>" +
+                                    "<tr onmouseover=\"this.style.backgroundColor='#ffff66';\" onmouseout=\"this.style.backgroundColor='#d4e3e5';\" style=\"background-color: rgb(212, 227, 229);\">" +
+                                    "    <td><label>地点：</label></td><td>" + result.data.productDO.addr + "</td>" +
+                                    "</tr>" +
+                                    "<tr onmouseover=\"this.style.backgroundColor='#ffff66';\" onmouseout=\"this.style.backgroundColor='#d4e3e5';\" style=\"background-color: rgb(212, 227, 229);\">" +
+                                    "    <td><label>质检人员：</label></td><td>" + result.data.productDO.qualityman + "</td>" +
+                                    "</tr>" +
+                                    "<tr onmouseover=\"this.style.backgroundColor='#ffff66';\" onmouseout=\"this.style.backgroundColor='#d4e3e5';\" style=\"background-color: rgb(212, 227, 229);\">" +
+                                    "    <td><label>加工人员：</label></td><td>" + result.data.productDO.processman + "</td>" +
+                                    "</tr>" +
+                                    "<tr onmouseover=\"this.style.backgroundColor='#ffff66';\" onmouseout=\"this.style.backgroundColor='#d4e3e5';\" style=\"background-color: rgb(212, 227, 229);\">" +
+                                    "    <td><label>加工时间：</label></td><td>" + result.data.productDO.processtime + "</td>" +
+                                    "</tr>" +
+                                    "<tr onmouseover=\"this.style.backgroundColor='#ffff66';\" onmouseout=\"this.style.backgroundColor='#d4e3e5';\" style=\"background-color: rgb(212, 227, 229);\">" +
+                                    "    <td><label>备注信息：</label></td><td>" + result.data.productDO.note + "</td>" +
+                                    "</tr>" +
+                                    "<tr onmouseover=\"this.style.backgroundColor='#ffff66';\" onmouseout=\"this.style.backgroundColor='#d4e3e5';\" style=\"background-color: rgb(212, 227, 229);\">" +
+                                    "    <td><label>登记时间：</label></td><td>" + result.data.productDO.createtime + "</td>" +
+                                    "</tr>" +
+                                    "<tr onmouseover=\"this.style.backgroundColor='#ffff66';\" onmouseout=\"this.style.backgroundColor='#d4e3e5';\" style=\"background-color: rgb(212, 227, 229);\">" +
+                                    "    <td><label>操作人：</label></td><td>" + result.data.productDO.createname + "</td>" +
+                                    "</tr>" +
+                                    "<tr onmouseover=\"this.style.backgroundColor='#ffff66';\" onmouseout=\"this.style.backgroundColor='#d4e3e5';\" style=\"background-color: rgb(212, 227, 229);\">" +
+                                    "    <td><label>修改时间：</label></td><td>" + result.data.productDO.updatetime + "</td>" +
+                                    "</tr>" +
+                                    "<tr onmouseover=\"this.style.backgroundColor='#ffff66';\" onmouseout=\"this.style.backgroundColor='#d4e3e5';\" style=\"background-color: rgb(212, 227, 229);\">" +
+                                    "    <td><label>修改人：</label></td><td>" + result.data.productDO.updatename + "</td>" +
+                                    "</tr></tbody></table>";
+                            }
+                            if(result.data.logisticDO != null && result.data.logisticDO.traceno!="" && result.data.logisticDO.traceno!=null && result.data.logisticDO.createtime!="" && result.data.logisticDO.createtime!=null) {
+                                farmHtml += "<table class=\"hovertable\" id=\"scxx\">" +
+                                    "<tbody><tr>" +
+                                    "    <th colspan=\"2\">物流信息";
+                                if (result.data.logisticDO.isdel == "1") {
+                                    farmHtml += "<label id=\"isdel\" style=\"color: red;\">(已删除)</label>";
+                                }
+                                farmHtml += "</th></tr>" +
+                                    "<tr onmouseover=\"this.style.backgroundColor='#ffff66';\" onmouseout=\"this.style.backgroundColor='#d4e3e5';\" style=\"background-color: rgb(212, 227, 229);\">" +
+                                    "    <td><label>物流商：</label></td><td>" + result.data.logisticDO.wls + "</td>" +
+                                    "</tr>" +
+                                    "<tr onmouseover=\"this.style.backgroundColor='#ffff66';\" onmouseout=\"this.style.backgroundColor='#d4e3e5';\" style=\"background-color: rgb(212, 227, 229);\">" +
+                                    "    <td><label>物流单号：</label></td><td>" + result.data.logisticDO.logisticsno + "</td>" +
+                                    "</tr>" +
+                                    "<tr onmouseover=\"this.style.backgroundColor='#ffff66';\" onmouseout=\"this.style.backgroundColor='#d4e3e5';\" style=\"background-color: rgb(212, 227, 229);\">" +
+                                    "    <td><label>运输方式：</label></td><td>" + result.data.logisticDO.logisticstype + "</td>" +
+                                    "</tr>" +
+                                    "<tr onmouseover=\"this.style.backgroundColor='#ffff66';\" onmouseout=\"this.style.backgroundColor='#d4e3e5';\" style=\"background-color: rgb(212, 227, 229);\">" +
+                                    "    <td><label>运输人员：</label></td><td>" + result.data.logisticDO.divername + "</td>" +
+                                    "</tr>" +
+                                    "<tr onmouseover=\"this.style.backgroundColor='#ffff66';\" onmouseout=\"this.style.backgroundColor='#d4e3e5';\" style=\"background-color: rgb(212, 227, 229);\">" +
+                                    "    <td><label>联系电话：</label></td><td>" + result.data.logisticDO.divertel + "</td>" +
+                                    "</tr>" +
+                                    "<tr onmouseover=\"this.style.backgroundColor='#ffff66';\" onmouseout=\"this.style.backgroundColor='#d4e3e5';\" style=\"background-color: rgb(212, 227, 229);\">" +
+                                    "    <td><label>出发地：</label></td><td>" + result.data.logisticDO.beginaddr + "</td>" +
+                                    "</tr>" +
+                                    "<tr onmouseover=\"this.style.backgroundColor='#ffff66';\" onmouseout=\"this.style.backgroundColor='#d4e3e5';\" style=\"background-color: rgb(212, 227, 229);\">" +
+                                    "    <td><label>出发时间：</label></td><td>" + result.data.logisticDO.begindate + "</td>" +
+                                    "</tr>" +
+                                    "<tr onmouseover=\"this.style.backgroundColor='#ffff66';\" onmouseout=\"this.style.backgroundColor='#d4e3e5';\" style=\"background-color: rgb(212, 227, 229);\">" +
+                                    "    <td><label>目的地：</label></td><td>" + result.data.logisticDO.endaddr + "</td>" +
+                                    "</tr>" +
+                                    "<tr onmouseover=\"this.style.backgroundColor='#ffff66';\" onmouseout=\"this.style.backgroundColor='#d4e3e5';\" style=\"background-color: rgb(212, 227, 229);\">" +
+                                    "    <td><label>到达时间：</label></td><td>" + result.data.logisticDO.enddate + "</td>" +
+                                    "</tr>" +
+                                    "<tr onmouseover=\"this.style.backgroundColor='#ffff66';\" onmouseout=\"this.style.backgroundColor='#d4e3e5';\" style=\"background-color: rgb(212, 227, 229);\">" +
+                                    "    <td><label>仓库地址：</label></td><td>" + result.data.logisticDO.wareaddr + "</td>" +
+                                    "</tr>" +
+                                    "<tr onmouseover=\"this.style.backgroundColor='#ffff66';\" onmouseout=\"this.style.backgroundColor='#d4e3e5';\" style=\"background-color: rgb(212, 227, 229);\">" +
+                                    "    <td><label>仓库负责人：</label></td><td>" + result.data.logisticDO.warepeople + "</td>" +
+                                    "</tr>" +
+                                    "<tr onmouseover=\"this.style.backgroundColor='#ffff66';\" onmouseout=\"this.style.backgroundColor='#d4e3e5';\" style=\"background-color: rgb(212, 227, 229);\">" +
+                                    "    <td><label>实时位置：</label></td><td>" + result.data.logisticDO.note + "</td>" +
+                                    "</tr>" +
+                                    "<tr onmouseover=\"this.style.backgroundColor='#ffff66';\" onmouseout=\"this.style.backgroundColor='#d4e3e5';\" style=\"background-color: rgb(212, 227, 229);\">" +
+                                    "    <td><label>登记时间：</label></td><td>" + result.data.logisticDO.createtime + "</td>" +
+                                    "</tr>" +
+                                    "<tr onmouseover=\"this.style.backgroundColor='#ffff66';\" onmouseout=\"this.style.backgroundColor='#d4e3e5';\" style=\"background-color: rgb(212, 227, 229);\">" +
+                                    "    <td><label>操作人：</label></td><td>" + result.data.logisticDO.createname + "</td>" +
+                                    "</tr>" +
+                                    "<tr onmouseover=\"this.style.backgroundColor='#ffff66';\" onmouseout=\"this.style.backgroundColor='#d4e3e5';\" style=\"background-color: rgb(212, 227, 229);\">" +
+                                    "    <td><label>修改时间：</label></td><td>" + result.data.logisticDO.updatetime + "</td>" +
+                                    "</tr>" +
+                                    "<tr onmouseover=\"this.style.backgroundColor='#ffff66';\" onmouseout=\"this.style.backgroundColor='#d4e3e5';\" style=\"background-color: rgb(212, 227, 229);\">" +
+                                    "    <td><label>修改人：</label></td><td>" + result.data.logisticDO.updatename + "</td>" +
+                                    "</tr></tbody></table>";
+                            }
+                            if(result.data.salesDO != null && result.data.salesDO.traceno!="" && result.data.salesDO.traceno!=null && result.data.salesDO.createtime!="" && result.data.salesDO.createtime!=null) {
+                                farmHtml += "<table class=\"hovertable\" id=\"scxx\">" +
+                                    "<tbody><tr>" +
+                                    "    <th colspan=\"2\">销售信息";
+                                if (result.data.salesDO.isdel == "1") {
+                                    farmHtml += "<label id=\"isdel\" style=\"color: red;\">(已删除)</label>";
+                                }
+                                farmHtml += "</th></tr>" +
+                                    "<tr onmouseover=\"this.style.backgroundColor='#ffff66';\" onmouseout=\"this.style.backgroundColor='#d4e3e5';\" style=\"background-color: rgb(212, 227, 229);\">" +
+                                    "    <td><label>销售单位：</label></td><td>" + result.data.salesDO.salename + "</td>" +
+                                    "</tr>" +
+                                    "<tr onmouseover=\"this.style.backgroundColor='#ffff66';\" onmouseout=\"this.style.backgroundColor='#d4e3e5';\" style=\"background-color: rgb(212, 227, 229);\">" +
+                                    "    <td><label>销售时间：</label></td><td>" + result.data.salesDO.saletime + "</td>" +
+                                    "</tr>" +
+                                    "<tr onmouseover=\"this.style.backgroundColor='#ffff66';\" onmouseout=\"this.style.backgroundColor='#d4e3e5';\" style=\"background-color: rgb(212, 227, 229);\">" +
+                                    "    <td><label>销售地点：</label></td><td>" + result.data.salesDO.saleaddr + "</td>" +
+                                    "</tr>" +
+                                    "<tr onmouseover=\"this.style.backgroundColor='#ffff66';\" onmouseout=\"this.style.backgroundColor='#d4e3e5';\" style=\"background-color: rgb(212, 227, 229);\">" +
+                                    "    <td><label>销售人员：</label></td><td>" + result.data.salesDO.salery + "</td>" +
+                                    "</tr>" +
+                                    "<tr onmouseover=\"this.style.backgroundColor='#ffff66';\" onmouseout=\"this.style.backgroundColor='#d4e3e5';\" style=\"background-color: rgb(212, 227, 229);\">" +
+                                    "    <td><label>售价：</label></td><td>" + result.data.salesDO.price + "</td>" +
+                                    "</tr>" +
+                                    "<tr onmouseover=\"this.style.backgroundColor='#ffff66';\" onmouseout=\"this.style.backgroundColor='#d4e3e5';\" style=\"background-color: rgb(212, 227, 229);\">" +
+                                    "    <td><label>备注信息：</label></td><td>" + result.data.salesDO.note + "</td>" +
+                                    "</tr>" +
+                                    "<tr onmouseover=\"this.style.backgroundColor='#ffff66';\" onmouseout=\"this.style.backgroundColor='#d4e3e5';\" style=\"background-color: rgb(212, 227, 229);\">" +
+                                    "    <td><label>登记时间：</label></td><td>" + result.data.salesDO.createtime + "</td>" +
+                                    "</tr>" +
+                                    "<tr onmouseover=\"this.style.backgroundColor='#ffff66';\" onmouseout=\"this.style.backgroundColor='#d4e3e5';\" style=\"background-color: rgb(212, 227, 229);\">" +
+                                    "    <td><label>操作人：</label></td><td>" + result.data.salesDO.createname + "</td>" +
+                                    "</tr>" +
+                                    "<tr onmouseover=\"this.style.backgroundColor='#ffff66';\" onmouseout=\"this.style.backgroundColor='#d4e3e5';\" style=\"background-color: rgb(212, 227, 229);\">" +
+                                    "    <td><label>修改时间：</label></td><td>" + result.data.salesDO.updatetime + "</td>" +
+                                    "</tr>" +
+                                    "<tr onmouseover=\"this.style.backgroundColor='#ffff66';\" onmouseout=\"this.style.backgroundColor='#d4e3e5';\" style=\"background-color: rgb(212, 227, 229);\">" +
+                                    "    <td><label>修改人：</label></td><td>" + result.data.salesDO.updatename + "</td>" +
+                                    "</tr></tbody></table>";
+                            }
+                            farmHtml +="</th></tr></tbody></table>";
+                            farmHtml = farmHtml.replace(new RegExp("undefined", "gm"), "").replace(new RegExp("null","gm"),"");
+                            htmlStr+=farmHtml;
+                            document.getElementById('htmlStr').innerHTML =htmlStr.replace(new RegExp("undefined","gm"),"");
+                        }
+                        else{
+                            alert('未查到信息，请输入正确的追溯码！');
+                            $('#show').css('display','none');
+                            htmlStr="";
+                            return;
+                        }
+                        if(htmlStr=="" ||  result.data == null ||result.data=="" ){
+                            alert('未查到信息，请输入正确的追溯码！');
+                            $('#show').css('display','none');
+                            htmlStr="";
+                            return;
+                        }
+                        document.getElementById('htmlStr').innerHTML =htmlStr.replace(new RegExp("undefined","gm"),"");
+                    }else{
+                        alert('未查到信息，请输入正确的追溯码！');
+                        $('#show').css('display','none');
+                        htmlStr="";
+                    }
+                },
+                error : function() {
+                    alert("异常！");
+                }
+            });
+        }
+    });
+    function validateRule() {
+        var icon = "<i class='fa fa-times-circle'></i> ";
+        $("#openshow").validate({
+            rules : {
+                traceno : {
+                    required : true
+                }
+            },
+            messages : {
+                traceno : {
+                    required : icon + "请输入溯源编号"
+                }
+            }
+        })
+    }
+</script>
+</body>
+</html>

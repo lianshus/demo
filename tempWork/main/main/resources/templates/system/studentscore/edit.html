@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html>
+<meta charset="utf-8">
+<head th:include="include :: header"></head>
+<body class="gray-bg">
+	<div class="wrapper wrapper-content ">
+		<div class="row">
+			<div class="col-sm-12">
+				<div class="ibox float-e-margins">
+					<div class="ibox-content">
+						<form class="form-horizontal m-t" id="signupForm">
+						<input id="id" name="id" th:value="${studentscore.id}"  type="hidden">
+							<div class="form-group">	
+								<label class="col-sm-3 control-label">打分溯源码：</label>
+								<div class="col-sm-8">
+									<input id="traceno" name="traceno" th:value="${studentscore.traceno}" class="form-control" type="text" readonly>
+								</div>
+							</div>
+														<div class="form-group">
+								<label class="col-sm-3 control-label">课程编号：</label>
+								<div class="col-sm-8">
+									<input id="coursetraceno" name="coursetraceno" th:value="${studentscore.coursetraceno}" class="form-control" type="text" readonly>
+								</div>
+							</div>
+														<div class="form-group">	
+								<label class="col-sm-3 control-label">课程名称：</label>
+								<div class="col-sm-8">
+									<input id="coursename" name="coursename" th:value="${studentscore.coursename}" class="form-control" type="text" readonly>
+								</div>
+							</div>
+														<div class="form-group">
+								<label class="col-sm-3 control-label">课程讲师：</label>
+								<div class="col-sm-8">
+									<input id="teacher" name="teacher" th:value="${studentscore.teacher}" class="form-control" type="text" readonly>
+								</div>
+							</div>
+														<div class="form-group hide">
+								<label class="col-sm-3 control-label">standid：</label>
+								<div class="col-sm-8">
+									<input id="standid" name="standid" th:value="${studentscore.standid}" class="form-control" type="text">
+								</div>
+							</div>
+														<div class="form-group">
+								<label class="col-sm-3 control-label">评估标准编号：</label>
+								<div class="col-sm-8">
+									<input id="standtraceno" name="standtraceno" th:value="${studentscore.standtraceno}" class="form-control" type="text" readonly>
+								</div>
+							</div>
+														<div class="form-group">
+								<label class="col-sm-3 control-label">评估标准名称：</label>
+								<div class="col-sm-8">
+									<input id="standtname" name="standtname" th:value="${studentscore.standtname}" class="form-control" type="text" readonly>
+								</div>
+							</div>
+							<div class="form-group">
+								<label class="col-sm-12 control-label" style="text-align: center;font-size: 20px;">
+									=============== 请公平公正打分 ===============</label>
+							</div>
+														<div class="form-group">	
+								<label class="col-sm-3 control-label">知识掌握水平：</label>
+								<div class="col-sm-8">
+									<input id="pointknowledgerlevel" name="pointknowledgerlevel" th:value="${studentscore.pointknowledgerlevel}" class="form-control" type="number" max="100" min="0.00" step="0.01">
+								</div>
+							</div>
+														<div class="form-group">	
+								<label class="col-sm-3 control-label">讲解清晰度：</label>
+								<div class="col-sm-8">
+									<input id="pointexplanation" name="pointexplanation" th:value="${studentscore.pointexplanation}" class="form-control" type="number" max="100" min="0.00" step="0.01">
+								</div>
+							</div>
+														<div class="form-group">	
+								<label class="col-sm-3 control-label">课后作业合适度：</label>
+								<div class="col-sm-8">
+									<input id="pointhomeworklevel" name="pointhomeworklevel" th:value="${studentscore.pointhomeworklevel}" class="form-control" type="number" max="100" min="0.00" step="0.01">
+								</div>
+							</div>
+														<div class="form-group">	
+								<label class="col-sm-3 control-label">作业批改完成度：</label>
+								<div class="col-sm-8">
+									<input id="pointhomeworkgrad" name="pointhomeworkgrad" th:value="${studentscore.pointhomeworkgrad}" class="form-control" type="number" max="100" min="0.00" step="0.01">
+								</div>
+							</div>
+														<div class="form-group">	
+								<label class="col-sm-3 control-label">教师课件质量：</label>
+								<div class="col-sm-8">
+									<input id="pointcourequa" name="pointcourequa" th:value="${studentscore.pointcourequa}" class="form-control" type="number" max="100" min="0.00" step="0.01">
+								</div>
+							</div>
+														<div class="form-group">	
+								<label class="col-sm-3 control-label">教学互动质量：</label>
+								<div class="col-sm-8">
+									<input id="pointteachqua" name="pointteachqua" th:value="${studentscore.pointteachqua}" class="form-control" type="number" max="100" min="0.00" step="0.01">
+								</div>
+							</div>
+														<div class="form-group">	
+								<label class="col-sm-3 control-label">课程满意度：</label>
+								<div class="col-sm-8">
+									<input id="pointcoursesatisfact" name="pointcoursesatisfact" th:value="${studentscore.pointcoursesatisfact}" class="form-control" type="number" max="100" min="0.00" step="0.01">
+								</div>
+							</div>
+																					<div class="form-group">
+								<div class="col-sm-8 col-sm-offset-3">
+									<button type="submit" class="btn btn-primary">提交评分</button>
+								</div>
+							</div>
+						</form>
+					</div>
+				</div>
+			</div>
+	</div>
+	</div>
+	<div th:include="include::footer"></div>
+	<script type="text/javascript" src="/js/appjs/system/studentscore/edit.js">
+	</script><script type="text/javascript" src="/js/plugins/My97DatePicker/WdatePicker.js"></script>
+</body>
+</html>
